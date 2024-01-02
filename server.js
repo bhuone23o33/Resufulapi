@@ -2,6 +2,7 @@ require('dotenv').config()
 const express = require('express');
 const app = express();
 const productRouter = require('./routes/productRoute.js');
+const errorMiddleware = require('./middleware/errorMiddleware.js');
 
 const mongoose = require('mongoose');
 
@@ -17,11 +18,13 @@ app.use(express.urlencoded({ extended: false }));
 
 
 
+
 app.use('/api/product', productRouter);
 
 
 app.get('/', (req, res) => {
-    res.send("Hello World this is nodejs framework express js");
+    throw new Error('fake error');
+    // res.send("Hello World this is nodejs framework express js");
 })
 
 app.get('/blogs', (req, res) => {
@@ -29,8 +32,9 @@ app.get('/blogs', (req, res) => {
 })
 
 
+app.use(errorMiddleware);
 
-// connect this to mongodb
+// connect this to mongodb    
 mongoose
     .connect(URL)
     .then(() => {
